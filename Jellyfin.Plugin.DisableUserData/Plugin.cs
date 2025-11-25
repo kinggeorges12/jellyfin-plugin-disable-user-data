@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using Jellyfin.Plugin.DisableUserData.Configuration;
 using MediaBrowser.Common.Configuration;
@@ -18,6 +19,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public static Plugin? Instance { get; private set; }
 
+
     public Plugin(
         IApplicationPaths applicationPaths,
         IXmlSerializer xmlSerializer,
@@ -35,45 +37,56 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         {
             try
             {
+                const string BaseName = "Jellyfin.Api.Controllers";
+                var controllersMap = new Dictionary<string, ImmutableList<string>>
+                {
+                    [$"{BaseName}.ItemsController"] = ImmutableList.Create("GetItemsByUserIdLegacy", "GetItems", "GetResumeItemsLegacy", "GetResumeItems"),
+                    [$"{BaseName}.UserLibraryController"] = ImmutableList.Create("GetLatestMediaLegacy", "GetLatestMedia"),
+                    [$"{BaseName}.TvShowsController"] = ImmutableList.Create("GetNextUp")
+                };
                 var count = actionDescriptorProvider.AddDynamicFilter<DisableUserDataActionFilter>(
                     serviceProvider,
                     cad =>
                     {
-                        var fullName = cad.ControllerTypeInfo.FullName;
+                        var controllerName = cad.ControllerTypeInfo.FullName;
                         var methodName = cad.MethodInfo.Name;
 
-                        return string.Equals(fullName, "Jellyfin.Api.Controllers.ItemsController", StringComparison.Ordinal)
-                               && (string.Equals(methodName, "GetItems", StringComparison.Ordinal)
-                                   || string.Equals(methodName, "GetItemsByUserIdLegacy", StringComparison.Ordinal));
+                        // Console.WriteLine($"Disable UserData: Checking for {controllerName} - {methodName}");
+
+                        if (controllerName == null)
+                        {
+                            return false;
+                        }
+
+                        return controllersMap.TryGetValue(controllerName, out var methodNames)
+                               && methodNames.Contains(methodName);
                     });
 
                 _logger.LogInformation(
-                    "Collections Accelerator: attached CollectionsActionFilter to {Count} actions",
+                    "Disable UserData: attached DisableUserDataActionFilter to {Count} actions",
                     count);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Collections Accelerator: failed to attach action filter");
+                _logger.LogError(ex, "Disable UserData: failed to attach action filter");
             }
         });
     }
 
-    public override string Name => "Collections Accelerator";
+    public override string Name => "Disable UserData";
 
     public override Guid Id => Guid.Parse("b24c5930-c337-4e0f-977f-1d900629ad09");
 
     public override string Description =>
-        "Omits UserData (watch status) from the Collections view in order to massively speed up its loading";
+        "Omits UserData (watch status) from different endpoints in order to speed up queries";
 
     public IEnumerable<PluginPageInfo> GetPages()
     {
         return
         [
-            new PluginPageInfo
-            {
-                Name = Name,
-                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
-            }
+            new PluginPageInfo { Name = Name, EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace) }
         ];
     }
+
+
 }

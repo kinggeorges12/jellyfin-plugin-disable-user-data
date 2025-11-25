@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Collections Accelerator</title>
+    <title>Disable User Data</title>
 </head>
 <body>
 <div id="DisableUserDataConfigPage"
@@ -13,16 +13,75 @@
     <div data-role="content">
         <div class="content-primary">
             <form id="DisableUserDataConfigForm">
+
+                <!-- 1. Global plugin toggle -->
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
-                        <input id="EnablePlugin"
-                               name="EnablePlugin"
+                        <input id="Enabled"
+                               name="Enabled"
                                type="checkbox"
                                is="emby-checkbox" />
-                        <span>Enable Collections Accelerator</span>
+                        <span>Enable plugin</span>
                     </label>
                     <div class="fieldDescription">
-                        When enabled, the plugin removes UserData from collection queries to speed up the Collections view.
+                        When enabled, the plugin disables UserData on selected API endpoints to improve performance.
+                    </div>
+                </div>
+
+                <hr />
+
+                <h3>Collection endpoints</h3>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="DisableOnCollections"
+                               name="DisableOnCollections"
+                               type="checkbox"
+                               is="emby-checkbox" />
+                        <span>Disable for Collections</span>
+                    </label>
+                    <div class="fieldDescription">
+                        When enabled, UserData is disabled for queries that load a Collections View.
+                        Applies to <code>GetItems</code> and <code>GetItemsByUserIdLegacy</code>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h3>Home endpoints</h3>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="DisableOnContinueWatching"
+                               name="DisableOnContinueWatching"
+                               type="checkbox"
+                               is="emby-checkbox" />
+                        <span>Disable UserData for Continue Watching API</span>
+                    </label>
+                    <div class="fieldDescription">
+                        Applies to <code>GetResumeItemsLegacy</code> and <code>GetResumeItems</code>.
+                    </div>
+
+                    <label class="emby-checkbox-label">
+                        <input id="DisableOnNextUp"
+                               name="DisableOnNextUp"
+                               type="checkbox"
+                               is="emby-checkbox" />
+                        <span>Disable UserData for Next Up API</span>
+                    </label>
+                    <div class="fieldDescription">
+                        Applies to <code>GetNextUp</code>.
+                    </div>
+
+                    <label class="emby-checkbox-label">
+                        <input id="DisableOnRecentlyAdded"
+                               name="DisableOnRecentlyAdded"
+                               type="checkbox"
+                               is="emby-checkbox" />
+                        <span>Disable UserData for Recently Added Media APIs</span>
+                    </label>
+                    <div class="fieldDescription">
+                        Applies to <code>GetLatestMedia</code> and <code>GetLatestMediaLegacy</code>.
                     </div>
                 </div>
 
@@ -39,6 +98,7 @@
 
     <script type="text/javascript">
         var DisableUserDataConfig = {
+            // MUST match Plugin.Id in Plugin.cs
             pluginUniqueId: 'b24c5930-c337-4e0f-977f-1d900629ad09'
         };
 
@@ -47,7 +107,21 @@
                 Dashboard.showLoadingMsg();
                 ApiClient.getPluginConfiguration(DisableUserDataConfig.pluginUniqueId)
                     .then(function (config) {
-                        document.querySelector('#EnablePlugin').checked = config.Enabled === true;
+                        document.querySelector('#Enabled').checked =
+                            config.Enabled === undefined ? true : config.Enabled;
+
+                        document.querySelector('#DisableOnCollections').checked =
+                            config.DisableOnCollections === undefined ? false : config.DisableOnCollections;
+
+                        document.querySelector('#DisableOnContinueWatching').checked =
+                            config.DisableOnContinueWatching === undefined ? false : config.DisableOnContinueWatching;
+
+                        document.querySelector('#DisableOnNextUp').checked =
+                            config.DisableOnNextUp === undefined ? false : config.DisableOnNextUp;
+
+                        document.querySelector('#DisableOnRecentlyAdded').checked =
+                            config.DisableOnRecentlyAdded === undefined ? false : config.DisableOnRecentlyAdded;
+
                         Dashboard.hideLoadingMsg();
                     });
             });
@@ -57,7 +131,11 @@
                 Dashboard.showLoadingMsg();
                 ApiClient.getPluginConfiguration(DisableUserDataConfig.pluginUniqueId)
                     .then(function (config) {
-                        config.Enabled = document.querySelector('#EnablePlugin').checked;
+                        config.Enabled = document.querySelector('#Enabled').checked;
+                        config.DisableOnCollections = document.querySelector('#DisableOnCollections').checked;
+                        config.DisableOnContinueWatching = document.querySelector('#DisableOnContinueWatching').checked;
+                        config.DisableOnNextUp = document.querySelector('#DisableOnNextUp').checked;
+                        config.DisableOnRecentlyAdded = document.querySelector('#DisableOnRecentlyAdded').checked;
 
                         ApiClient.updatePluginConfiguration(DisableUserDataConfig.pluginUniqueId, config)
                             .then(function (result) {
