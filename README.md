@@ -42,7 +42,9 @@ What this plugin does **not** do: Modify any data or metadata in any way at all,
 2. Because of the way this plugin works (and same applies for the meilisearch one I mentioned earlier), it relies on Jellyfin not suddenly changing controller / method names for the above. This should be very rare, but there's no guarantee of this plugin working through versions (though the way it's implemented, in the worst case the parameter just won't get added).
 3. Finally, this is a **mitigation**. Ideally this plugin shouldn't have to exist. As soon as the issue is fixed upstream (and I want to help look into that), this plugin should be removed, and I might publish a version targetting that ABI which removes the Plugin functionality.
 
-## Client compatibility
+## Compatibility
+
+This is only for Jellyfin versions 10.11.0 and above.
 
 Because it's server-wide, this is expected to work across clients. This has been concretely tested on Jellyfin Web (browser), Jellyfin Media Player (desktop), official Jellyfin client for Android TV, Wholphin (also for Android TV), Jellyfin on Android and Findroid on Android. I haven't been able to test on other platforms, but these APIs are common and I don't expect there to be much of an issue.
 
