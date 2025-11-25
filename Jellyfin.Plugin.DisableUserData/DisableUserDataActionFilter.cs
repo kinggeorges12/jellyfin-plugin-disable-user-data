@@ -50,7 +50,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         ActionExecutingContext context,
         HttpRequest request)
     {
-        if (config.DisableOnCollections)
+        if (!config.DisableOnCollections)
         {
             return false;
         }
@@ -85,7 +85,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         ActionExecutingContext context,
         HttpRequest request)
     {
-        if (config.DisableOnContinueWatching)
+        if (!config.DisableOnContinueWatching)
         {
             return false;
         }
@@ -104,7 +104,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         ActionExecutingContext context,
         HttpRequest request)
     {
-        if (config.DisableOnNextUp)
+        if (!config.DisableOnNextUp)
         {
             return false;
         }
@@ -123,7 +123,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         ActionExecutingContext context,
         HttpRequest request)
     {
-        if (config.DisableOnRecentlyAdded)
+        if (!config.DisableOnRecentlyAdded)
         {
             return false;
         }
