@@ -62,6 +62,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         if (request.Path.ToString().EndsWith("/Items", StringComparison.InvariantCultureIgnoreCase) && config.DisableOnAllItems)
         {
             DisableUserData(context);
+            _logger.LogInformation("Disabling UserData for folder at path {Path}", request.Path);
             return true;
         }
 
@@ -84,7 +85,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
             includeItemTypes.Contains("BoxSet"))
         {
             DisableUserData(context);
-            _logger.LogInformation("Disabling UserData for folder at path {Path}", request.Path);
+            _logger.LogInformation("Disabling UserData for collections folder at path {Path}", request.Path);
             return true;
         }
 
