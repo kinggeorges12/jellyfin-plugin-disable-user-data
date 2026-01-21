@@ -166,33 +166,30 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         return false;
     }
 
-    private void DisableUserData(ActionExecutingContext context)
-    {
-        context.ActionArguments["enableUserData"] = false;
-    }
-
     // Disables UserData for /Shows/{id}/Seasons endpoint
-    private bool DisabledForSeasonsEndpoint(PluginConfiguration config, ActionExecutingContext context, HttpRequest request)
+    private bool DisabledForSeasonsEndpoint(
+        PluginConfiguration config,
+        ActionExecutingContext context,
+        HttpRequest request)
     {
         if (!config.DisableOnSeasons)
         {
             return false;
         }
 
-        // Match /Shows/{id}/Seasons (case-insensitive)
-        var path = request.Path.ToString();
-        if (path != null)
+        if (request.Path.ToString().EndsWith("/Seasons", StringComparison.InvariantCultureIgnoreCase))
         {
-            var segments = path.TrimEnd('/').Split('/');
-            if (segments.Length >= 3 && segments[^2].Equals("Shows", StringComparison.InvariantCultureIgnoreCase)
-                && segments[^1].Equals("Seasons", StringComparison.InvariantCultureIgnoreCase))
-            {
-                DisableUserData(context);
-                _logger.LogInformation("Disabling UserData for Seasons endpoint at path {Path}", request.Path);
-                return true;
-            }
+            DisableUserData(context);
+            _logger.LogInformation("Disabling UserData for Seasons at path {Path}", request.Path);
+            return true;
         }
+        
         return false;
+    }
+
+    private void DisableUserData(ActionExecutingContext context)
+    {
+        context.ActionArguments["enableUserData"] = false;
     }
 
 }
