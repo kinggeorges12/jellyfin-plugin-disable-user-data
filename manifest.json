@@ -11,9 +11,9 @@
                 "checksum": "b686c02a9a989d232f9c4fd910834c8f",
                 "changelog": "Added feature for blocking user data in seasons.",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/kinggeorges12/jellyfin-plugin-disable-user-data/releases/download/0.2.1.3/disable-user-data_0.2.1.3.zip",
+                "sourceUrl": "https://github.com/kinggeorges12/jellyfin-plugin-disable-user-data/releases/download/0.2.1.4/disable-user-data_0.2.1.4.zip",
                 "timestamp": "2025-11-26T03:29:24Z",
-                "version": "0.2.1.3"
+                "version": "0.2.1.4"
             },
             {
                 "checksum": "bcae5ecdccb28a96bb6e213d20111be2",
