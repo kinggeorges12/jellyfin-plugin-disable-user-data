@@ -43,14 +43,14 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
             || DisabledForCollections(config, context, request)
             || DisabledForContinueWatching(config, context, request)
             || DisabledForNextUp(config, context, request)
-            || DisabledForRecentlyAdded(config, context, request))
+            || DisabledForRecentlyAdded(config, context, request)
+            || DisabledForSeasonsEndpoint(config, context, request))
         {
             await next();
             return;
         }
 
         _logger.LogDebug("DisableUserDataActionFilter not applying to path {Path}", request.Path);
-
         await next();
     }
 
@@ -170,4 +170,29 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
     {
         context.ActionArguments["enableUserData"] = false;
     }
+
+    // Disables UserData for /Shows/{id}/Seasons endpoint
+    private bool DisabledForSeasonsEndpoint(PluginConfiguration config, ActionExecutingContext context, HttpRequest request)
+    {
+        if (!config.DisableOnSeasons)
+        {
+            return false;
+        }
+
+        // Match /Shows/{id}/Seasons (case-insensitive)
+        var path = request.Path.ToString();
+        if (path != null)
+        {
+            var segments = path.TrimEnd('/').Split('/');
+            if (segments.Length >= 3 && segments[^2].Equals("Shows", StringComparison.InvariantCultureIgnoreCase)
+                && segments[^1].Equals("Seasons", StringComparison.InvariantCultureIgnoreCase))
+            {
+                DisableUserData(context);
+                _logger.LogInformation("Disabling UserData for Seasons endpoint at path {Path}", request.Path);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

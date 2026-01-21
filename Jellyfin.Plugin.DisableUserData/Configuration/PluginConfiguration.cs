@@ -12,6 +12,7 @@ public class PluginConfiguration : BasePluginConfiguration
         DisableOnNextUp = false;
         DisableOnContinueWatching = false;
         DisableOnRecentlyAdded = false;
+        DisableOnSeasons = false;
     }
 
     /// <summary>
@@ -44,12 +45,18 @@ public class PluginConfiguration : BasePluginConfiguration
     /// </summary>
     public bool DisableOnRecentlyAdded { get; set; }
 
+    /// <summary>
+    /// Disable User Data for /Shows/{id}/Seasons endpoint.
+    /// </summary>
+    public bool DisableOnSeasons { get; set; }
+
     public override string ToString()
     {
-        return $"{nameof(DisableOnAllItems)}: {DisableOnAllItems}, " +
-               $"{nameof(DisableOnCollections)}: {DisableOnCollections}, " +
-               $"{nameof(DisableOnContinueWatching)}: {DisableOnContinueWatching}, " +
-               $"{nameof(DisableOnNextUp)}: {DisableOnNextUp}, " +
-               $"{nameof(DisableOnRecentlyAdded)}: {DisableOnRecentlyAdded}";
+         return $"{nameof(DisableOnAllItems)}: {DisableOnAllItems}, " +
+             $"{nameof(DisableOnCollections)}: {DisableOnCollections}, " +
+             $"{nameof(DisableOnContinueWatching)}: {DisableOnContinueWatching}, " +
+             $"{nameof(DisableOnNextUp)}: {DisableOnNextUp}, " +
+             $"{nameof(DisableOnRecentlyAdded)}: {DisableOnRecentlyAdded}, " +
+             $"{nameof(DisableOnSeasons)}: {DisableOnSeasons}";
     }
 }

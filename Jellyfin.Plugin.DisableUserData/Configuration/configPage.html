@@ -1,3 +1,15 @@
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="DisableOnSeasons"
+                               name="DisableOnSeasons"
+                               type="checkbox"
+                               is="emby-checkbox" />
+                        <span>Disable User Data for TV Show Seasons</span>
+                    </label>
+                    <div class="fieldDescription">
+                        When checked, UserData is disabled for queries to <code>/Shows/&lt;id&gt;/Seasons</code>.
+                    </div>
+                </div>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,6 +138,8 @@
                         document.querySelector('#DisableOnRecentlyAdded').checked =
                             config.DisableOnRecentlyAdded === undefined ? false : config.DisableOnRecentlyAdded;
 
+                        document.querySelector('#DisableOnSeasons').checked =
+                            config.DisableOnSeasons === undefined ? false : config.DisableOnSeasons;
                         Dashboard.hideLoadingMsg();
                     });
             });
@@ -140,6 +154,7 @@
                         config.DisableOnContinueWatching = document.querySelector('#DisableOnContinueWatching').checked;
                         config.DisableOnNextUp = document.querySelector('#DisableOnNextUp').checked;
                         config.DisableOnRecentlyAdded = document.querySelector('#DisableOnRecentlyAdded').checked;
+                        config.DisableOnSeasons = document.querySelector('#DisableOnSeasons').checked;
 
                         ApiClient.updatePluginConfiguration(DisableUserDataConfig.pluginUniqueId, config)
                             .then(function (result) {
