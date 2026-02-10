@@ -126,8 +126,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         return false;
     }
 
-    // NOTE: Due to a known bug in Jellyfin for Android TV, disabling UserData for NextUp causes client crashes.
-    // This method skips disabling UserData for Android TV clients.
+    // NOTE: Due to a known bug in Jellyfin for Android TV and Roku, disabling UserData for NextUp causes client crashes.
     private bool DisabledForNextUp(
         PluginConfiguration config,
         ActionExecutingContext context,
@@ -138,11 +137,10 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
             return false;
         }
 
-        // Check if client is Jellyfin for Android TV
-        if (request.Query.TryGetValue("client", out var client) &&
-            client.ToString().Equals("jellyfin-androidtv", StringComparison.OrdinalIgnoreCase))
+        // Check if client is Jellyfin for Android TV or Roku
+        if (IsAndroidTvOrRokuClient(request))
         {
-            _logger.LogInformation("Skipping UserData disabling for Next Up due to Android TV bug at path {Path}", request.Path);
+            _logger.LogInformation("Skipping UserData disabling for Next Up due to Android/Roku TV bug at path {Path}", request.Path);
             return false;
         }
 
@@ -202,4 +200,35 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         context.ActionArguments["enableUserData"] = false;
     }
 
+    private static bool IsAndroidTvOrRokuClient(HttpRequest request)
+    {
+        // Best signal: X-Emby-Authorization header with Client="jellyfin-androidtv" or "roku"
+        if (request.Headers.TryGetValue("X-Emby-Authorization", out var embyAuthHeader))
+        {
+            var auth = embyAuthHeader.ToString().ToLowerInvariant();
+            if (auth.Contains("client=\"jellyfin-androidtv\"") || auth.Contains("client=\"roku\""))
+            {
+                return true;
+            }
+        }
+        // Fallback: query param
+        if (request.Query.TryGetValue("client", out var client))
+        {
+            var clientStr = client.ToString().ToLowerInvariant();
+            if (clientStr.Contains("jellyfin-androidtv") || clientStr.Contains("roku"))
+            {
+                return true;
+            }
+        }
+        // Fallback: User-Agent
+        if (request.Headers.TryGetValue("User-Agent", out var userAgent))
+        {
+            var ua = userAgent.ToString().ToLowerInvariant();
+            if (ua.Contains("androidtv") || ua.Contains("android tv") || ua.Contains("jellyfin-androidtv") || ua.Contains("roku"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
