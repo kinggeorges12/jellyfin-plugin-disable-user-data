@@ -126,6 +126,8 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         return false;
     }
 
+    // NOTE: Due to a known bug in Jellyfin for Android TV, disabling UserData for NextUp causes client crashes.
+    // This method skips disabling UserData for Android TV clients.
     private bool DisabledForNextUp(
         PluginConfiguration config,
         ActionExecutingContext context,
@@ -133,6 +135,14 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
     {
         if (!config.DisableOnNextUp)
         {
+            return false;
+        }
+
+        // Check if client is Jellyfin for Android TV
+        if (request.Query.TryGetValue("client", out var client) &&
+            client.ToString().Equals("jellyfin-androidtv", StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogInformation("Skipping UserData disabling for Next Up due to Android TV bug at path {Path}", request.Path);
             return false;
         }
 
