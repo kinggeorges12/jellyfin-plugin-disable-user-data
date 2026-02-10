@@ -163,6 +163,9 @@
 
                         document.querySelector('#DisableOnSeasons').checked =
                             config.DisableOnSeasons === undefined ? false : config.DisableOnSeasons;
+
+                        document.querySelector('#DisableLogging').checked =
+                            config.DisableLogging === undefined ? false : config.DisableLogging;
                         Dashboard.hideLoadingMsg();
                     });
             });
@@ -178,6 +181,7 @@
                         config.DisableOnNextUp = document.querySelector('#DisableOnNextUp').checked;
                         config.DisableOnRecentlyAdded = document.querySelector('#DisableOnRecentlyAdded').checked;
                         config.DisableOnSeasons = document.querySelector('#DisableOnSeasons').checked;
+                        config.DisableLogging = document.querySelector('#DisableLogging').checked;
 
                         ApiClient.updatePluginConfiguration(DisableUserDataConfig.pluginUniqueId, config)
                             .then(function (result) {
