@@ -8,7 +8,7 @@
         "overview": "Disable user data param for speed-ups",
         "versions": [
             {
-                "checksum": "a2b12c9162b0d8be85c6c1d9093444b5",
+                "checksum": "7fd369894b281568dc69e7588b34e5ac",
                 "changelog": "Added option to suppress logging.",
                 "targetAbi": "10.11.0.0",
                 "sourceUrl": "https://github.com/kinggeorges12/jellyfin-plugin-disable-user-data/releases/download/0.2.1.9/disable-user-data_0.2.1.9.zip",
