@@ -8,7 +8,7 @@
         "overview": "Disable user data param for speed-ups",
         "versions": [
             {
-                "checksum": "25af69e724ab0f46c69a3619570d4a41",
+                "checksum": "f9fcb70317a00159b9a1348b2f9da256",
                 "changelog": "Added feature for blocking user data in seasons.",
                 "targetAbi": "10.11.0.0",
                 "sourceUrl": "https://github.com/kinggeorges12/jellyfin-plugin-disable-user-data/releases/download/0.2.1.5/disable-user-data_0.2.1.5.zip",
