@@ -138,9 +138,13 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         }
 
         // Check if client is Jellyfin for Android TV or Roku
-        if (IsAndroidTvOrRokuClient(request))
+        if (IsAndroidTvClient(request))
         {
-            _logger.LogInformation("Skipping UserData disabling for Next Up due to Android/Roku TV bug at path {Path}", request.Path);
+            _logger.LogInformation("Skipping UserData disabling for Next Up due to Android TV bug at path {Path}", request.Path);
+            return false;
+        } else if (IsRokuClient(request))
+        {
+            _logger.LogInformation("Skipping UserData disabling for Next Up due to Roku bug at path {Path}", request.Path);
             return false;
         }
 
@@ -200,13 +204,13 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         context.ActionArguments["enableUserData"] = false;
     }
 
-    private static bool IsAndroidTvOrRokuClient(HttpRequest request)
+    private static bool IsAndroidTvClient(HttpRequest request)
     {
-        // Best signal: X-Emby-Authorization header with Client="jellyfin-androidtv" or "roku"
+        // Best signal: X-Emby-Authorization header with Client="jellyfin-androidtv"
         if (request.Headers.TryGetValue("X-Emby-Authorization", out var embyAuthHeader))
         {
             var auth = embyAuthHeader.ToString().ToLowerInvariant();
-            if (auth.Contains("client=\"jellyfin-androidtv\"") || auth.Contains("client=\"roku\""))
+            if (auth.Contains("client=\"jellyfin-androidtv\""))
             {
                 return true;
             }
@@ -215,7 +219,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         if (request.Query.TryGetValue("client", out var client))
         {
             var clientStr = client.ToString().ToLowerInvariant();
-            if (clientStr.Contains("jellyfin-androidtv") || clientStr.Contains("roku"))
+            if (clientStr.Contains("jellyfin-androidtv"))
             {
                 return true;
             }
@@ -224,7 +228,39 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         if (request.Headers.TryGetValue("User-Agent", out var userAgent))
         {
             var ua = userAgent.ToString().ToLowerInvariant();
-            if (ua.Contains("androidtv") || ua.Contains("android tv") || ua.Contains("jellyfin-androidtv") || ua.Contains("roku"))
+            if (ua.Contains("androidtv") || ua.Contains("android tv") || ua.Contains("jellyfin-androidtv"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static bool IsRokuClient(HttpRequest request)
+    {
+        // Best signal: X-Emby-Authorization header with Client="roku"
+        if (request.Headers.TryGetValue("X-Emby-Authorization", out var embyAuthHeader))
+        {
+            var auth = embyAuthHeader.ToString().ToLowerInvariant();
+            if (auth.Contains("client=\"roku\""))
+            {
+                return true;
+            }
+        }
+        // Fallback: query param
+        if (request.Query.TryGetValue("client", out var client))
+        {
+            var clientStr = client.ToString().ToLowerInvariant();
+            if (clientStr.Contains("roku"))
+            {
+                return true;
+            }
+        }
+        // Fallback: User-Agent
+        if (request.Headers.TryGetValue("User-Agent", out var userAgent))
+        {
+            var ua = userAgent.ToString().ToLowerInvariant();
+            if (ua.Contains("roku"))
             {
                 return true;
             }
