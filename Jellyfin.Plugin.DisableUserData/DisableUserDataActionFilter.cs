@@ -18,10 +18,10 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
 
     public DisableUserDataActionFilter(
         ILibraryManager libraryManager,
-        SuppressibleLogger<DisableUserDataActionFilter> logger)
+        ILogger<DisableUserDataActionFilter> logger)
     {
         _libraryManager = libraryManager;
-        _logger = logger;
+        _logger = new SuppressibleLogger<DisableUserDataActionFilter>(logger);
     }
 
     public async Task OnActionExecutionAsync(
