@@ -50,6 +50,11 @@ public class PluginConfiguration : BasePluginConfiguration
     /// </summary>
     public bool DisableOnSeasons { get; set; }
 
+    /// <summary>
+    /// Suppress all plugin logging output.
+    /// </summary>
+    public bool DisableLogging { get; set; }
+
     public override string ToString()
     {
          return $"{nameof(DisableOnAllItems)}: {DisableOnAllItems}, " +
@@ -57,6 +62,7 @@ public class PluginConfiguration : BasePluginConfiguration
              $"{nameof(DisableOnContinueWatching)}: {DisableOnContinueWatching}, " +
              $"{nameof(DisableOnNextUp)}: {DisableOnNextUp}, " +
              $"{nameof(DisableOnRecentlyAdded)}: {DisableOnRecentlyAdded}, " +
-             $"{nameof(DisableOnSeasons)}: {DisableOnSeasons}";
+             $"{nameof(DisableOnSeasons)}: {DisableOnSeasons}, " +
+             $"{nameof(DisableLogging)}: {DisableLogging}";
     }
 }

@@ -14,11 +14,11 @@ namespace Jellyfin.Plugin.DisableUserData;
 public sealed class DisableUserDataActionFilter : IAsyncActionFilter
 {
     private readonly ILibraryManager _libraryManager;
-    private readonly ILogger<DisableUserDataActionFilter> _logger;
+    private readonly SuppressibleLogger<DisableUserDataActionFilter> _logger;
 
     public DisableUserDataActionFilter(
         ILibraryManager libraryManager,
-        ILogger<DisableUserDataActionFilter> logger)
+        SuppressibleLogger<DisableUserDataActionFilter> logger)
     {
         _libraryManager = libraryManager;
         _logger = logger;
@@ -34,6 +34,9 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
             await next();
             return;
         }
+
+        // Set logger suppression from config
+        _logger.DisableLogging = config.DisableLogging;
 
         var request = context.HttpContext.Request;
         _logger.LogDebug("Intercepting path {Path} to see whether we disable UserData", request.Path);
