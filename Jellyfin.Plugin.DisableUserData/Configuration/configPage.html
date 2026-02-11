@@ -90,7 +90,7 @@
                         Applies to <code>GetNextUp</code>.
                         <br>
                         <span style="color: #d9534f; font-size: 0.9em;">
-                            <strong>Note:</strong> This option does <u>not</u> apply to Jellyfin for Android TV or Roku due to a known bug that causes client crashes.
+                            <strong>Note:</strong> This option does <u>not</u> apply to Jellyfin for Android TV due to a known bug that causes client crashes.
                         </span>
                     </div>
 
@@ -108,7 +108,20 @@
 
                 <hr />
 
-                <h3>Logging</h3>
+                <h3>Global settings</h3>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="EnableRoku"
+                               name="EnableRoku"
+                               type="checkbox"
+                               is="emby-checkbox" />
+                        <span>Enable Roku UserData</span>
+                    </label>
+                    <div class="fieldDescription">
+                        UserData cannot be disabled in Roku due to a known bug that causes client crashes.
+                    </div>
+                </div>
 
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
@@ -164,6 +177,10 @@
                         document.querySelector('#DisableOnSeasons').checked =
                             config.DisableOnSeasons === undefined ? false : config.DisableOnSeasons;
 
+                        document.querySelector('#EnableRoku').checked =
+                            config.EnableRoku === undefined ? true : config.EnableRoku;
+                        Dashboard.hideLoadingMsg();
+
                         document.querySelector('#DisableLogging').checked =
                             config.DisableLogging === undefined ? false : config.DisableLogging;
                         Dashboard.hideLoadingMsg();
@@ -182,6 +199,7 @@
                         config.DisableOnRecentlyAdded = document.querySelector('#DisableOnRecentlyAdded').checked;
                         config.DisableOnSeasons = document.querySelector('#DisableOnSeasons').checked;
                         config.DisableLogging = document.querySelector('#DisableLogging').checked;
+                        config.EnableRoku = document.querySelector('#EnableRoku').checked;
 
                         ApiClient.updatePluginConfiguration(DisableUserDataConfig.pluginUniqueId, config)
                             .then(function (result) {

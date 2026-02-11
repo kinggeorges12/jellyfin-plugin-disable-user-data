@@ -13,6 +13,8 @@ public class PluginConfiguration : BasePluginConfiguration
         DisableOnContinueWatching = false;
         DisableOnRecentlyAdded = false;
         DisableOnSeasons = false;
+        EnableRoku = true;
+        DisableLogging = false;
     }
 
     /// <summary>
@@ -51,6 +53,11 @@ public class PluginConfiguration : BasePluginConfiguration
     public bool DisableOnSeasons { get; set; }
 
     /// <summary>
+    /// Enable UserData for Roku clients.
+    /// </summary>
+    public bool EnableRoku { get; set; }
+
+    /// <summary>
     /// Suppress all plugin logging output.
     /// </summary>
     public bool DisableLogging { get; set; }
@@ -63,6 +70,7 @@ public class PluginConfiguration : BasePluginConfiguration
              $"{nameof(DisableOnNextUp)}: {DisableOnNextUp}, " +
              $"{nameof(DisableOnRecentlyAdded)}: {DisableOnRecentlyAdded}, " +
              $"{nameof(DisableOnSeasons)}: {DisableOnSeasons}, " +
-             $"{nameof(DisableLogging)}: {DisableLogging}";
+             $"{nameof(EnableRoku)}: {EnableRoku}" +
+             $"{nameof(DisableLogging)}: {DisableLogging}, ";
     }
 }

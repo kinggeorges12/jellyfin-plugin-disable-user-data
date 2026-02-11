@@ -62,7 +62,18 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         ActionExecutingContext context,
         HttpRequest request)
     {
-        if (request.Path.ToString().EndsWith("/Items", StringComparison.InvariantCultureIgnoreCase) && config.DisableOnAllItems)
+        if (!config.DisableOnAllItems)
+        {
+            return false;
+        }
+        // Check if client is Jellyfin for Roku
+        if (config.EnableRoku && IsRokuClient(request))
+        {
+            _logger.LogInformation("Skipping UserData disabling due to Roku bug at path {Path}", request.Path);
+            return false;
+        }
+
+        if (request.Path.ToString().EndsWith("/Items", StringComparison.InvariantCultureIgnoreCase))
         {
             DisableUserData(context);
             _logger.LogInformation("Disabling UserData for folder at path {Path}", request.Path);
@@ -79,6 +90,12 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
     {
         if (!config.DisableOnCollections)
         {
+            return false;
+        }
+        // Check if client is Jellyfin for Roku
+        if (config.EnableRoku && IsRokuClient(request))
+        {
+            _logger.LogInformation("Skipping UserData disabling due to Roku bug at path {Path}", request.Path);
             return false;
         }
 
@@ -118,6 +135,12 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         {
             return false;
         }
+        // Check if client is Jellyfin for Roku
+        if (config.EnableRoku && IsRokuClient(request))
+        {
+            _logger.LogInformation("Skipping UserData disabling due to Roku bug at path {Path}", request.Path);
+            return false;
+        }
 
         if (request.Path.ToString().EndsWith("/Resume", StringComparison.InvariantCultureIgnoreCase))
         {
@@ -129,7 +152,7 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         return false;
     }
 
-    // NOTE: Due to a known bug in Jellyfin for Android TV and Roku, disabling UserData for NextUp causes client crashes.
+    // NOTE: Due to a known bug in Jellyfin for Android TV, disabling UserData for NextUp causes client crashes.
     private bool DisabledForNextUp(
         PluginConfiguration config,
         ActionExecutingContext context,
@@ -139,15 +162,17 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         {
             return false;
         }
+        // Check if client is Jellyfin for Roku
+        if (config.EnableRoku && IsRokuClient(request))
+        {
+            _logger.LogInformation("Skipping UserData disabling due to Roku bug at path {Path}", request.Path);
+            return false;
+        }
 
-        // Check if client is Jellyfin for Android TV or Roku
+        // Check if client is Jellyfin for Android TV
         if (IsAndroidTvClient(request))
         {
             _logger.LogInformation("Skipping UserData disabling for Next Up due to Android TV bug at path {Path}", request.Path);
-            return false;
-        } else if (IsRokuClient(request))
-        {
-            _logger.LogInformation("Skipping UserData disabling for Next Up due to Roku bug at path {Path}", request.Path);
             return false;
         }
 
@@ -189,6 +214,12 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
     {
         if (!config.DisableOnSeasons)
         {
+            return false;
+        }
+        // Check if client is Jellyfin for Roku
+        if (config.EnableRoku && IsRokuClient(request))
+        {
+            _logger.LogInformation("Skipping UserData disabling due to Roku bug at path {Path}", request.Path);
             return false;
         }
 
