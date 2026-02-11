@@ -4,16 +4,16 @@
         "guid": "b24c5930-c337-4e0f-977f-1d900629ad09",
         "name": "Disable User Data",
         "description": "Omits UserData (watch status / progress) from different endpoints in order to speed up queries.",
-        "owner": "pelluch",
+        "owner": "kinggeorges12",
         "overview": "Disable user data param for speed-ups",
         "versions": [
             {
                 "checksum": "c1ce79f2f06b0b97451897aaaa9eb3ac",
                 "changelog": "Added option to enable UserData for Roku clients.",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/kinggeorges12/jellyfin-plugin-disable-user-data/releases/download/0.2.1.11/disable-user-data_0.2.1.11.zip",
-                "timestamp": "2026-02-10T20:41:00Z",
-                "version": "0.2.1.11"
+                "sourceUrl": "https://github.com/kinggeorges12/jellyfin-plugin-disable-user-data/releases/download/0.2.1.12/disable-user-data_0.2.1.12.zip",
+                "timestamp": "2026-02-11T00:56:00Z",
+                "version": "0.2.1.12"
             },
             {
                 "checksum": "3f56c12d0fa14581715530cd9198b9f7",

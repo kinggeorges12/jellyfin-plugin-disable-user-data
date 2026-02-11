@@ -195,6 +195,12 @@ public sealed class DisableUserDataActionFilter : IAsyncActionFilter
         {
             return false;
         }
+        // Check if client is Jellyfin for Roku
+        if (config.EnableRoku && IsRokuClient(request))
+        {
+            _logger.LogInformation("Skipping UserData disabling due to Roku bug at path {Path}", request.Path);
+            return false;
+        }
 
         if (request.Path.ToString().EndsWith("/Latest", StringComparison.InvariantCultureIgnoreCase))
         {
